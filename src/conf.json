@@ -1,0 +1,3 @@
+{
+  "reserved_word_lower": ["select", "from", "where", "group by", "order by"]
+}
