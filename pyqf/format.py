@@ -1,7 +1,7 @@
 from typing import List
 import re
 import json
-from src.helpers import add_upper_reserved_words
+from pyqf.helpers import add_upper_reserved_words
 
 
 def format(query: str) -> str:

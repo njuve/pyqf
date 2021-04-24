@@ -6,6 +6,7 @@ authors = ["njuve <ale.nnn.r@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
+sphinx-press-theme = "^0.5.1"
 
 [tool.poetry.dev-dependencies]
 
