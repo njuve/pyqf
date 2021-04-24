@@ -47,10 +47,14 @@ class Format:
         config = json.load(open("src/conf.json"))
         reserved_word_lower = config["reserved_word_lower"]
         self.reserved_words = add_upper_reserved_words(reserved_word_lower)
-        self.query = self.generate_query_list(query)
+        self.query = self.to_uppercase(
+            [
+                val for val in re.split("(" + "|".join(self.reserved_words + [".*,"]) + ")", query) if val != ""
+            ]  # str query to list splited by reserved words
+        )
 
-    def generate_query_list(self, query: str) -> List[str]:
-        def reserved_word2uppercase(word):
+    def to_uppercase(self, query):
+        def reservedword2uppercase(word):
             if word in self.reserved_words:
                 result_word = word.upper().strip()
             else:
@@ -58,11 +62,7 @@ class Format:
 
             return result_word
 
-        def split_query(query):
-            return [val for val in re.split("(" + "|".join(self.reserved_words + [".*,"]) + ")", query) if val != ""]
-
-        splited_query = split_query(query)
-        return [reserved_word2uppercase(word) for word in splited_query]
+        return [reservedword2uppercase(word) for word in query]
 
     def indent(self, query: List[str]) -> List[str]:
         def insert_indent(word):
