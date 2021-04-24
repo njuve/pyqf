@@ -1,5 +1,7 @@
 from typing import List
 import re
+import json
+from src.helpers import add_upper_reserved_words
 
 
 def format(query: str) -> str:
@@ -42,10 +44,10 @@ def format(query: str) -> str:
 
 class Format:
     def __init__(self, query: str):
-        self.reserved_words = ["select", "from", "group by", "SELECT", "FROM", "GROUP BY"]
-        self.split_words = ["select", "from", ".*,", "group by"]
+        config = json.load(open("src/conf.json"))
+        reserved_word_lower = config["reserved_word_lower"]
+        self.reserved_words = add_upper_reserved_words(reserved_word_lower)
         self.query = self.generate_query_list(query)
-
 
     def generate_query_list(self, query: str) -> List[str]:
         def reserved_word2uppercase(word):
@@ -57,7 +59,7 @@ class Format:
             return result_word
 
         def split_query(query):
-            return [val for val in re.split("(" + "|".join(self.split_words) + ")", query) if val != ""]
+            return [val for val in re.split("(" + "|".join(self.reserved_words + [".*,"]) + ")", query) if val != ""]
 
         splited_query = split_query(query)
         return [reserved_word2uppercase(word) for word in splited_query]
