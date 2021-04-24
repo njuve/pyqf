@@ -52,9 +52,9 @@ class Format:
     def generate_query_list(self, query: str) -> List[str]:
         def reserved_word2uppercase(word):
             if word in self.reserved_words:
-                result_word = word.upper()
+                result_word = word.upper().strip()
             else:
-                result_word = word
+                result_word = word.strip()
 
             return result_word
 
