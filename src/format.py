@@ -25,19 +25,14 @@ def format(query: str) -> str:
     FROM
         t
 
-    >>> print(format("select sum(a) over (partition by b) from t"))
+    >>> print(format("select sum(a) over (partition by b), count(b) from t group by c"))
     SELECT
-        sum(a) over (partition by b)
-    FROM
-        t
-
-    >>> print(format("select sum(a) from t group by b"))
-    SELECT
-        sum(a)
+        sum(a) over (partition by b),
+        count(b)
     FROM
         t
     GROUP BY
-        b
+        c
     """
     return Format(query=query).run()
 
