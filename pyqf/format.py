@@ -39,7 +39,7 @@ def format(query: str) -> str:
 
 class Format:
     def __init__(self, query: str):
-        config = json.load(open("src/conf.json"))
+        config = json.load(open("pyqf/conf.json"))
         indent_words = config["indent_words"]
         only_uppercase_words = config["only_uppercase_words"]
         self.indent_words = add_uppercases(indent_words)
