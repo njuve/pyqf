@@ -1,7 +1,7 @@
 from typing import List
 import re
 import json
-from pyqf.helpers import add_upper_reserved_words
+from pyqf.helpers import add_uppercases
 
 
 def format(query: str) -> str:
@@ -40,29 +40,31 @@ def format(query: str) -> str:
 class Format:
     def __init__(self, query: str):
         config = json.load(open("src/conf.json"))
-        reserved_word_lower = config["reserved_word_lower"]
-        self.reserved_words = add_upper_reserved_words(reserved_word_lower)
+        indent_words = config["indent_words"]
+        only_uppercase_words = config["only_uppercase_words"]
+        self.indent_words = add_uppercases(indent_words)
+        self.only_uppercase_words = add_uppercases(only_uppercase_words)
         self.query = self.to_uppercase(
             [
-                val for val in re.split("(" + "|".join(self.reserved_words + [".*,"]) + ")", query) if val != ""
+                val for val in re.split("(" + "|".join(self.indent_words + [".*,"]) + ")", query) if val != ""
             ]  # str query to list splited by reserved words
         )
 
     def to_uppercase(self, query):
-        def reservedword2uppercase(word):
-            if word in self.reserved_words:
+        def indentword2uppercase(word):
+            if word in self.indent_words + self.only_uppercase_words:
                 result_word = word.upper().strip()
             else:
                 result_word = word.strip()
 
             return result_word
 
-        return [reservedword2uppercase(word) for word in query]
+        return [indentword2uppercase(word) for word in query]
 
     def indent(self, query: List[str]) -> List[str]:
         def insert_indent(word):
-            count_reserved_word = sum([1 for reversed_word in self.reserved_words if reversed_word in word])
-            if count_reserved_word > 0:
+            count_indent_word = sum([1 for indent_word in self.indent_words if indent_word in word])
+            if count_indent_word > 0:
                 indented_word = word
             else:
                 indented_word = "\u0020\u0020\u0020\u0020" + word

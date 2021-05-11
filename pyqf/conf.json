@@ -1,3 +1,26 @@
 {
-  "reserved_word_lower": ["select", "from", "where", "group by", "order by"]
+  "indent_words": [
+    "select",
+    "from",
+    "where",
+    "group by",
+    "order by",
+    "join",
+    "inner join",
+    "outer join",
+    "full outer join",
+    "union",
+    "union all",
+    "on"
+  ],
+  "only_uppercase_words": [
+    "sum",
+    "count",
+    "avg",
+    "median",
+    "rank",
+    "in",
+    "partition by",
+    "between"
+  ]
 }
