@@ -21,6 +21,7 @@
     "rank",
     "in",
     "partition by",
-    "between"
+    "between",
+    "over"
   ]
 }

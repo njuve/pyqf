@@ -27,8 +27,8 @@ def format(query: str) -> str:
 
     >>> print(format("select sum(a) over (partition by b), count(b) from t group by c"))
     SELECT
-        sum(a) over (partition by b),
-        count(b)
+        SUM(a) OVER (PARTITION BY b),
+        COUNT(b)
     FROM
         t
     GROUP BY
@@ -41,29 +41,24 @@ class Format:
     def __init__(self, query: str):
         config = json.load(open("pyqf/conf.json"))
         indent_words = config["indent_words"]
-        only_uppercase_words = config["only_uppercase_words"]
         self.indent_words = add_uppercases(indent_words)
-        self.only_uppercase_words = add_uppercases(only_uppercase_words)
-        self.query = self.to_uppercase(
-            [
-                val for val in re.split("(" + "|".join(self.indent_words + [".*,"]) + ")", query) if val != ""
-            ]  # str query to list splited by reserved words
-        )
+        self.only_uppercase_words = config["only_uppercase_words"]
+        self.query = [
+            val.strip()
+            for val in re.split("(" + "|".join(self.indent_words + [".*,"]) + ")", self.to_uppercase(query))
+            if val != ""
+        ]  # str query to list splited by reserved words
 
     def to_uppercase(self, query):
-        def indentword2uppercase(word):
-            if word in self.indent_words + self.only_uppercase_words:
-                result_word = word.upper().strip()
-            else:
-                result_word = word.strip()
+        uppercases = {word: word.upper() for word in self.only_uppercase_words + self.indent_words}
+        for k, v in uppercases.items():
+            query = query.replace(k, v)
 
-            return result_word
-
-        return [indentword2uppercase(word) for word in query]
+        return query
 
     def indent(self, query: List[str]) -> List[str]:
         def insert_indent(word):
-            count_indent_word = sum([1 for indent_word in self.indent_words if indent_word in word])
+            count_indent_word = sum([1 for indent_word in self.indent_words if indent_word == word])
             if count_indent_word > 0:
                 indented_word = word
             else:
